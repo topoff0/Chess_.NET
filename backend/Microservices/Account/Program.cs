@@ -8,15 +8,6 @@ using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
-DotNetEnv.Env.Load();
-
-// Add environment variables
-builder.Configuration.AddEnvironmentVariables();
-
-// Add database
-builder.Services.AddScoped<UserDbContext>();
-
-
 // Add jwt configuration
 builder.Services.AddJwtAuthentication(builder.Configuration);
 

@@ -34,7 +34,7 @@ namespace Account.Services.Implementations
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userId))
             {
-                throw new ArgumentNullException("Email not found in token.");
+                throw new InvalidOperationException("Email not found in token.");
             }
 
             var player = await _db.Players.FirstOrDefaultAsync(p => p.Email == email);

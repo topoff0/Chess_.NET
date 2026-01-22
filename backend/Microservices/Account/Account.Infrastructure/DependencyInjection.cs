@@ -51,19 +51,19 @@ public static class DependencyInjection
     {
 
         var _connectionString = configuration.GetConnectionString("UserServiceConnection")
-          ?? throw new InvalidOperationException("Connection string 'UserServiceConnection' is not configured");
+          ?? throw new InvalidOperationException("Connection string 'UserServiceConnection' is not configured.");
 
         services.AddDbContext<UserDbContext>(options =>
             {
                 options.UseNpgsql(_connectionString, npgOpt =>
                 {
-                      npgOpt.EnableRetryOnFailure
-                  (
-                   maxRetryCount: 5,
-                   maxRetryDelay: TimeSpan.FromSeconds(15),
-                   errorCodesToAdd: null
-                  );
-                  });
+                    npgOpt.EnableRetryOnFailure
+                (
+                 maxRetryCount: 5,
+                 maxRetryDelay: TimeSpan.FromSeconds(15),
+                 errorCodesToAdd: null
+                );
+                });
             });
 
         return services;
