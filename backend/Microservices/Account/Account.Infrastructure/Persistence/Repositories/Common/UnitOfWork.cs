@@ -3,9 +3,9 @@ using Account.Core.Repositories.Common;
 
 namespace Account.Infrastructure.Persistence.Repositories.Common;
 
-public class UnitOfWork(UserDbContext context) : IUnitOfWork
+public class UnitOfWork(UsersDbContext context) : IUnitOfWork
 {
-    private readonly UserDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     public async Task<int> SaveChangesAsync(CancellationToken token = default)
     {

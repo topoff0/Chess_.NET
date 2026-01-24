@@ -1,4 +1,4 @@
-﻿namespace Account.Application.Common.Configuration;
+﻿namespace Account.Application.Common.Configurations;
 
 public sealed class JwtSettings
 {

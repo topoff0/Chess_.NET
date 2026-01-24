@@ -1,5 +1,7 @@
 ﻿using Account.Application.Common.Interfaces;
+using Account.Core.Repositories;
 using Account.Infrastructure.Persistence;
+using Account.Infrastructure.Persistence.Repositories;
 using Account.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,15 +11,14 @@ namespace Account.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure
-        (
-          this IServiceCollection services,
-          IConfiguration configuration
-        )
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
+                                                       IConfiguration configuration)
     {
         services.AddUsersDbContext(configuration);
 
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddRepositories();
+
+        services.AddServices();
 
         return services;
     }
@@ -26,7 +27,7 @@ public static class DependencyInjection
     public static async Task ApplyMigrationAsync(this IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
 
         try
         {
@@ -47,17 +48,14 @@ public static class DependencyInjection
 
     // --- Private ---
 
-    private static IServiceCollection AddUsersDbContext
-        (
-           this IServiceCollection services,
-           IConfiguration configuration
-        )
+    private static IServiceCollection AddUsersDbContext(this IServiceCollection services,
+                                                        IConfiguration configuration)
     {
 
         var _connectionString = configuration.GetConnectionString("UserServiceConnection")
-          ?? throw new InvalidOperationException("Connection string 'UserServiceConnection' is not configured.");
+            ?? throw new InvalidOperationException("Connection string 'UserServiceConnection' is not configured.");
 
-        services.AddDbContext<UserDbContext>(options =>
+        services.AddDbContext<UsersDbContext>(options =>
             {
                 options.UseNpgsql(_connectionString, npgOpt =>
                 {
@@ -69,6 +67,21 @@ public static class DependencyInjection
                 );
                 });
             });
+
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IPlayerRepository, PlayerRepository>();
+        services.AddScoped<IEmailVerificationCodeRepository, EmailVerificationRepository>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }

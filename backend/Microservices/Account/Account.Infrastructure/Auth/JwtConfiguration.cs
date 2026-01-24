@@ -1,5 +1,5 @@
 using System.Text;
-using Account.Application.Common.Configuration;
+using Account.Application.Common.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

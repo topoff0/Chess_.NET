@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Account.Infrastructure.Persistence.Configuration;
 
-public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
+public class EmailVerificationCodeConfiguration : IEntityTypeConfiguration<EmailVerificationCode>
 {
-    // TODO: Create configraiton for refreshTokens
-    public void Configure(EntityTypeBuilder<RefreshToken> builder)
+    // TODO: Create configraiton for EmailVerificationCode
+    public void Configure(EntityTypeBuilder<EmailVerificationCode> builder)
     {
         throw new NotImplementedException();
     }

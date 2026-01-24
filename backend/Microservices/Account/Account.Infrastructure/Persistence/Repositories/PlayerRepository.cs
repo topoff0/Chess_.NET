@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Account.Infrastructure.Persistence.Repositories;
 
-public class PlayerRepository(UserDbContext context) : IPlayerRepository
+public class PlayerRepository(UsersDbContext context) : IPlayerRepository
 {
-    private readonly UserDbContext _context = context;
+    private readonly UsersDbContext _context = context;
 
     public async Task AddAsync(Player entity, CancellationToken token = default)
     {
