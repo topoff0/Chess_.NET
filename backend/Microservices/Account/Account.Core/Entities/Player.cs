@@ -1,11 +1,12 @@
 
-namespace Account.Core.Entities
+namespace Account.Core.Entities;
+
+public class Player
 {
-    public class Player : User
-    {
-        public int Elo { get; set; }
-        public List<int> GamesId { get; set; } = [];
-        public List<int> TournamentsId { get; set; } = [];
-        public List<Player> Friends { get; set; } = [];
-    }
+    public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
+    public int Elo { get; private set; }
+    public List<Guid> GamesId { get; private set; } = [];
+    public List<Guid> TournamentsId { get; private set; } = [];
+    public List<Guid> FriendsIds { get; private set; } = [];
 }

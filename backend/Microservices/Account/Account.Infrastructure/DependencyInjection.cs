@@ -1,7 +1,11 @@
 ﻿using Account.Application.Common.Interfaces;
 using Account.Core.Repositories;
+using Account.Core.Repositories.Common;
+using Account.Core.Security;
 using Account.Infrastructure.Persistence;
 using Account.Infrastructure.Persistence.Repositories;
+using Account.Infrastructure.Persistence.Repositories.Common;
+using Account.Infrastructure.Security;
 using Account.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +23,8 @@ public static class DependencyInjection
         services.AddRepositories();
 
         services.AddServices();
+
+        services.AddSecurity();
 
         return services;
     }
@@ -75,6 +81,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IEmailVerificationCodeRepository, EmailVerificationRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
@@ -82,6 +89,14 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSecurity(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IVerificationCodeHasher, VerificationCodeHasher>();
 
         return services;
     }
