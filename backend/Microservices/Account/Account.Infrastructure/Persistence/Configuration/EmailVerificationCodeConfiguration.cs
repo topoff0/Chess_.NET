@@ -9,6 +9,6 @@ public class EmailVerificationCodeConfiguration : IEntityTypeConfiguration<Email
     // TODO: Create configraiton for EmailVerificationCode
     public void Configure(EntityTypeBuilder<EmailVerificationCode> builder)
     {
-        throw new NotImplementedException();
+        builder.ToTable("EmailCodes", "account");
     }
 }

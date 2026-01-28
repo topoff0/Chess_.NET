@@ -4,6 +4,7 @@ namespace Account.Core.Entities
 {
     public sealed class RefreshToken
     {
+        public Guid Id { get; set; }
         public string Token { get; private set; } = string.Empty;
         public Guid UserId { get; private set; }
         public DateTime Expires { get; private set; }
@@ -27,6 +28,7 @@ namespace Account.Core.Entities
 
             return new RefreshToken
             {
+                Id = Guid.NewGuid(),
                 Token = GenerateSecurityToken(),
                 UserId = userId,
                 Expires = DateTime.UtcNow.AddDays(expiryDays),
