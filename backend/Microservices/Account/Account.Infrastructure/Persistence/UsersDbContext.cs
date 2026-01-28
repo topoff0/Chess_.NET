@@ -1,17 +1,16 @@
 using Account.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Account.Infrastructure.Persistence
-{
-    public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContext(options)
-    {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Player> Players { get; set; }
-        public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
+namespace Account.Infrastructure.Persistence;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersDbContext).Assembly);
-        }
+public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContext(options)
+{
+    public DbSet<User> Users { get; set; }
+    public DbSet<Player> Players { get; set; }
+    public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersDbContext).Assembly);
     }
 }

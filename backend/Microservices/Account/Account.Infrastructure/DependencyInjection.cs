@@ -2,6 +2,7 @@
 using Account.Core.Repositories;
 using Account.Core.Repositories.Common;
 using Account.Core.Security;
+using Account.Infrastructure.Configuration;
 using Account.Infrastructure.Persistence;
 using Account.Infrastructure.Persistence.Repositories;
 using Account.Infrastructure.Persistence.Repositories.Common;
@@ -21,6 +22,8 @@ public static class DependencyInjection
         services.AddUsersDbContext(configuration);
 
         services.AddRepositories();
+
+        services.AddConfigurationForServices(configuration);
 
         services.AddServices();
 
@@ -87,9 +90,21 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddConfigurationForServices(this IServiceCollection services,
+                                                                  IConfiguration configuration)
+    {
+        services.AddJwtAuthenticationConfiguration(configuration);
+
+        services.AddEmailSenderConfiguration(configuration);
+
+        return services;
+    }
+
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        services.AddScoped<IEmailSenderService, EmailSenderService>();
 
         return services;
     }

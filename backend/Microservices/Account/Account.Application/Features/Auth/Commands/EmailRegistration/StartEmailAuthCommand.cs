@@ -16,13 +16,13 @@ public record StartEmailAuthCommand(StartEmailRegistrationDto Dto)
 public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
                                                  IEmailVerificationCodeRepository codeRepository,
                                                  IUnitOfWork unitOfWork,
-                                                 IEmailServiceSender emailService)
+                                                 IEmailSenderService emailService)
     : IRequestHandler<StartEmailAuthCommand, ResultT<IsUserExistsResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IEmailVerificationCodeRepository _codeRepository = codeRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IEmailServiceSender _emailService = emailService;
+    private readonly IEmailSenderService _emailService = emailService;
 
     public async Task<ResultT<IsUserExistsResult>> Handle(StartEmailAuthCommand request, CancellationToken token)
     {
@@ -34,7 +34,7 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
         {
             string code = GenerateCode();
 
-            await _emailService.SendVerificationCodeAsync(request.Dto.Email, code, token);
+            await _emailService.SendEmailAsync(request.Dto.Email,"Pixel chess", code, token);
             await _codeRepository.AddAsync(EmailVerificationCode.Create(request.Dto.Email, code), token);
             await _userRepository.AddAsync(User.CreatePending(request.Dto.Email, AuthProvider.Email), token);
 
