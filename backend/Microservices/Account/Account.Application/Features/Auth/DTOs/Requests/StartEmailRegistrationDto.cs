@@ -1,3 +1,3 @@
 ﻿namespace Account.Application.Features.Auth.DTOs.Requests;
 
-public record StartEmailRegistrationDto(string Email);
+public record StartEmailAuthDto(string Email);

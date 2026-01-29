@@ -11,7 +11,7 @@ using MediatR;
 
 namespace Account.Application.Features.Auth.Commands.EmailRegistration;
 
-public record StartEmailAuthCommand(StartEmailRegistrationDto Dto)
+public record StartEmailAuthCommand(StartEmailAuthDto Dto)
     : IRequest<ResultT<IsUserExistsResult>>;
 
 public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
