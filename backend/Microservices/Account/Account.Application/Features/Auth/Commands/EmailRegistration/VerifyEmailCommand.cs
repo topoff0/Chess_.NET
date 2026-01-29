@@ -43,6 +43,9 @@ public sealed class VerifyEmailCommandHandler(IUserRepository userRepository,
         codeEntity.UseCode();
 
         await _unitOfWork.SaveChangesAsync(token);
+
+        //TODO: return JWT token
+
         return ResultT<VerifyEmailResult>.Success(new VerifyEmailResult(true)); 
     }
 }

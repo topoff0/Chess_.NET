@@ -30,6 +30,8 @@ public class User
 
     private User() { }
 
+
+    //TODO: Add refresh token
     public static User CreatePending(string email, AuthProvider provider)
         => new()
         {
@@ -38,8 +40,6 @@ public class User
             Provider = provider,
             Status = UserStatus.Pending
         };
-
-
     public void SetUser(string username, string passwordHash, string imagePath)
     {
         PasswordHash = passwordHash;
@@ -48,5 +48,15 @@ public class User
         Status = UserStatus.Active;
         CreatedAt = DateTime.UtcNow;
         LastLoginAt = DateTime.UtcNow;
+    }
+
+    public void UpdateLastLoginTime()
+    {
+        LastLoginAt = DateTime.UtcNow;
+    }
+
+    public void AddRefreshToken(RefreshToken refreshToken)
+    {
+        RefreshTokens.Add(refreshToken);
     }
 }
