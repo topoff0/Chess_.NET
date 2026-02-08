@@ -1,17 +1,16 @@
 using Account.API.Extensions;
 using Account.Infrastructure;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.TraversePath().Load();
+
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
-
-//TODO: Replace with "scalal"
-builder.Services.AddMySwagger();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -29,7 +28,11 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMySwagger(app.Environment);
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.MapControllers();
 

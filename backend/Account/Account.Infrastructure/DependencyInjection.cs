@@ -65,7 +65,8 @@ public static class DependencyInjection
     {
 
         var _connectionString = configuration.GetConnectionString("ChessAccountConnection")
-            ?? throw new InvalidOperationException("Connection string 'UserServiceConnection' is not configured.");
+            ?? throw new InvalidOperationException(
+                "Connection string 'ChessAccountConnection' is not configured.");
 
         services.AddDbContext<UsersDbContext>(options =>
             {
@@ -107,7 +108,7 @@ public static class DependencyInjection
     {
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssemblies(typeof(StartEmailAuthCommand).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(StartEmailAuthCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(VerifyEmailCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(CreateProfileCommand).Assembly);
