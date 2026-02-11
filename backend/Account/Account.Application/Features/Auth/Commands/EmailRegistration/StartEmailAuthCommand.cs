@@ -33,10 +33,12 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
         if (string.IsNullOrEmpty(request.Dto.Email)) //TODO: Implement real email validation
             return Error.Validation(ErrorCodes.InvalidEmail, ErrorMessages.InvalidEmail);
 
-        bool isExistsAndActive = await _userRepository.IsExistsAndActiveByEmail(request.Dto.Email, token);
-        if (isExistsAndActive)
+        bool isExists = await _userRepository.IsExistsByEmailAsync(request.Dto.Email, token);
+        if (isExists)
         {
-            return ResultT<IsUserExistsAndActiveResult>.Success(new(true, true));
+            bool isActive = await _userRepository.IsActiveByEmailAsync(request.Dto.Email, token);
+            if (isActive)
+                return ResultT<IsUserExistsAndActiveResult>.Success(new(true, true));
         }
 
         string verificationCode = GenerateCode();
@@ -55,7 +57,9 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
 
         var hashedCode = _codeHasher.Hash(verificationCode);
         await _codeRepository.AddAsync(EmailVerificationCode.Create(request.Dto.Email, hashedCode), token);
-        await _userRepository.AddAsync(User.CreatePending(request.Dto.Email, AuthProvider.Email), token);
+
+        if (isExists)
+            await _userRepository.AddAsync(User.CreatePending(request.Dto.Email, AuthProvider.Email), token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
