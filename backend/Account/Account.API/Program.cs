@@ -9,7 +9,7 @@ DotNetEnv.Env.TraversePath().Load();
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithFilters();
 
 builder.Services.AddOpenApi();
 
