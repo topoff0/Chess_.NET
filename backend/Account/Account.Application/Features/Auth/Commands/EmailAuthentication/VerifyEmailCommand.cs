@@ -6,7 +6,7 @@ using Account.Core.Repositories.Common;
 using Account.Core.Security;
 using MediatR;
 
-namespace Account.Application.Features.Auth.Commands.EmailRegistration;
+namespace Account.Application.Features.Auth.Commands.EmailAuthentication;
 
 public record VerifyEmailCommand(string Email, string VerificationCode)
     : IRequest<ResultT<VerifyEmailResult>>;

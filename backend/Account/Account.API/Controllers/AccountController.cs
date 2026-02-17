@@ -1,6 +1,6 @@
 using Account.API.DTOs;
 using Account.Application.Features.Auth.Commands.CreateProfile;
-using Account.Application.Features.Auth.Commands.EmailRegistration;
+using Account.Application.Features.Auth.Commands.EmailAuthentication;
 using Account.Application.Features.Auth.Commands.Login;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

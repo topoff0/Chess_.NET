@@ -30,8 +30,8 @@ public sealed class GlobalExceptionMiddleware(RequestDelegate next,
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
         var error = Error.Failure(
-            "internal_server_error",
-            "An unexpected error occurred."
+            ErrorCodes.InternalError,
+            ErrorMessages.InternalError
         );
 
         await context.Response.WriteAsJsonAsync(error);

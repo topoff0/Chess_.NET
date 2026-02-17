@@ -1,6 +1,6 @@
 ﻿using Account.Application.Common.Interfaces;
 using Account.Application.Features.Auth.Commands.CreateProfile;
-using Account.Application.Features.Auth.Commands.EmailRegistration;
+using Account.Application.Features.Auth.Commands.EmailAuthentication;
 using Account.Application.Features.Auth.Commands.Login;
 using Account.Core.Repositories;
 using Account.Core.Repositories.Common;
