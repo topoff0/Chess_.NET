@@ -24,9 +24,6 @@ public sealed class VerifyEmailCommandHandler(IUserRepository userRepository,
 
     public async Task<ResultT<VerifyEmailResult>> Handle(VerifyEmailCommand request, CancellationToken token)
     {
-        if (string.IsNullOrEmpty(request.Email)) //TODO: Implement real email validation
-            return Error.Validation(ErrorCodes.InvalidEmail, ErrorMessages.InvalidEmail);
-
         var user = await _userRepository.GetByEmailAsync(request.Email, token);
         if (user is null)
             return Error.NotFound(ErrorCodes.UserNotFound, ErrorMessages.UserNotFound);

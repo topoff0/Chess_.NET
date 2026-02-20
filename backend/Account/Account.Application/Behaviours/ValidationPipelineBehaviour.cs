@@ -1,18 +1,18 @@
 ﻿using Account.Application.Common.Errors;
-using Account.Application.Common.Results;
+using Account.Application.Exceptions;
 using FluentValidation;
 using MediatR;
 
 namespace Account.Application.Behaviours;
 
-public sealed class ValidationPipelineBehaviour<TRequest, TValue>(IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, ResultT<TValue>>
-    where TRequest : IRequest<ResultT<TValue>>
+public sealed class ValidationPipelineBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
 
-    public async Task<ResultT<TValue>> Handle(TRequest request,
-                                              RequestHandlerDelegate<ResultT<TValue>> next,
+    public async Task<TResponse> Handle(TRequest request,
+                                              RequestHandlerDelegate<TResponse> next,
                                               CancellationToken token)
     {
         if (!_validators.Any())
@@ -43,6 +43,6 @@ public sealed class ValidationPipelineBehaviour<TRequest, TValue>(IEnumerable<IV
 
         var error = Error.Validation(ErrorCodes.GeneralValidation, errorsDictionary);
 
-        return error;
+        throw new CustomValidationException(error);
     }
 }

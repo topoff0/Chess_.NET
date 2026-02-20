@@ -1,8 +1,8 @@
 ﻿using Account.Application.Auth.Logger;
-using Account.Application.Common.DTOs;
 using Account.Application.Common.Errors;
 using Account.Application.Common.Interfaces;
 using Account.Application.Common.Results;
+using Account.Application.DTOs;
 using Account.Application.Features.Auth.Results;
 using Account.Core.Entities;
 using Account.Core.Repositories;
@@ -37,12 +37,6 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
         {
             _logger.LogStartEmailAuthentication();
 
-            if (string.IsNullOrEmpty(request.Email)) //TODO: Implement real email validation
-            {
-                _logger.LogEmailValidationError();
-                return Error.Validation(ErrorCodes.InvalidEmail, ErrorMessages.InvalidEmail);
-            }
-
             bool isExists = await _userRepository.IsExistsByEmailAsync(request.Email, token);
             if (isExists)
             {
@@ -71,10 +65,14 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
             var hashedCode = _codeHasher.Hash(verificationCode);
             await _codeRepository.AddAsync(EmailVerificationCode.Create(request.Email, hashedCode), token);
 
-            if (isExists)
+            if (!isExists)
+            {
+                _logger.LogUserWithSuchEmailNotExistsAndNotActive(request.Email);
+                await _userRepository.AddAsync(User.CreatePending(request.Email, AuthProvider.Email), token);
+            }
+            else
             {
                 _logger.LogUserWithSuchEmailExistsButNotActive(request.Email);
-                await _userRepository.AddAsync(User.CreatePending(request.Email, AuthProvider.Email), token);
             }
 
             await _unitOfWork.SaveChangesAsync(token);
@@ -86,7 +84,7 @@ public sealed class StartEmailAuthCommandHandler(IUserRepository userRepository,
         {
             _logger.LogStartEmailAuthUnexpectedError(ex.Message);
             return Error.Failure(ErrorCodes.StartEmailAuthUnexpectedError,
-                          ErrorMessages.UnexpectedError);
+                                 ErrorMessages.UnexpectedError);
         }
     }
 

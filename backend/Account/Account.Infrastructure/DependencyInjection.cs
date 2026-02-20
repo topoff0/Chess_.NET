@@ -1,7 +1,9 @@
-﻿using Account.Application.Common.Interfaces;
+﻿using Account.Application.Behaviours;
+using Account.Application.Common.Interfaces;
 using Account.Application.Features.Auth.Commands.CreateProfile;
 using Account.Application.Features.Auth.Commands.EmailAuthentication;
 using Account.Application.Features.Auth.Commands.Login;
+using Account.Application.Features.Auth.Validation;
 using Account.Core.Repositories;
 using Account.Core.Repositories.Common;
 using Account.Core.Security;
@@ -11,6 +13,8 @@ using Account.Infrastructure.Persistence.Repositories;
 using Account.Infrastructure.Persistence.Repositories.Common;
 using Account.Infrastructure.Security;
 using Account.Infrastructure.Services;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +34,11 @@ public static class DependencyInjection
 
         services.AddServices();
 
+        services.AddMediatRConfiguration();
+
         services.AddSecurity();
+
+        services.AddValidators();
 
         return services;
     }
@@ -106,18 +114,24 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        services.AddScoped<IEmailSenderService, EmailSenderService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMediatRConfiguration(this IServiceCollection services)
+    {
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(StartEmailAuthCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(VerifyEmailCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(CreateProfileCommand).Assembly);
+
+            cfg.AddOpenBehavior(typeof(ValidationPipelineBehaviour<,>));
         });
-
-
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
-
-        services.AddScoped<IEmailSenderService, EmailSenderService>();
 
         return services;
     }
@@ -129,4 +143,12 @@ public static class DependencyInjection
 
         return services;
     }
+
+    private static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<StartEmailAuthCommandValidator>();
+
+        return services;
+    }
+
 }

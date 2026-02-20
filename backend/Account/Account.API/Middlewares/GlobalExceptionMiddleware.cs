@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Account.Application.Common.Errors;
+using Account.Application.Exceptions;
 
 namespace Account.API.Middlewares;
 
@@ -15,14 +16,27 @@ public sealed class GlobalExceptionMiddleware(RequestDelegate next,
         {
             await _next(context);
         }
+        catch (CustomValidationException ex)
+        {
+            await HandleCustomValidationException(context, ex);
+        }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex);
+            await HandleInternalExceptionAsync(context, ex);
         }
     }
 
+    private async Task HandleCustomValidationException(HttpContext context, CustomValidationException exception)
+    {
+        _logger.LogWarning(exception, "Validation failed");
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        
+        await context.Response.WriteAsJsonAsync(exception.Error);
+    }
+
+    private async Task HandleInternalExceptionAsync(HttpContext context, Exception exception)
     {
         _logger.LogCritical(exception, "Unexpected exception occurred");
 

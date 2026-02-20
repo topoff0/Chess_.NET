@@ -1,5 +1,5 @@
-﻿using Account.Application.Common.DTOs;
-using Account.Application.Common.Results;
+﻿using Account.Application.Common.Results;
+using Account.Application.DTOs;
 
 namespace Account.Application.Common.Interfaces;
 

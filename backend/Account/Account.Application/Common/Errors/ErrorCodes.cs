@@ -12,8 +12,9 @@ public static class ErrorCodes
     public const string AccountNotActivated = "auth.account_not_activated";
 
     // Validation errors
-    public const string ModelStateValidationFailed = "model_state_validation.failed";
-    public const string UsernameAlreadyExists = "validation.username_exists";
+    public const string GeneralValidation = "validation.validation_error";
+    // public const string ModelStateValidationFailed = "model_state_validation.failed";
+    // public const string UsernameAlreadyExists = "validation.username_exists";
 
     // System errors
     public const string InternalError = "system.internal_error";
@@ -38,7 +39,7 @@ public static class ErrorMessages
 
     // System messages
     public const string InternalError = "An unexpected error occurred";
-    
+
     // Unexpected messages
     public const string UnexpectedError = "Something went wrong";
 }

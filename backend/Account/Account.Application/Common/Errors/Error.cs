@@ -15,12 +15,14 @@ public class Error
     private Error(
         string code,
         string description,
-        ErrorType errorType
+        ErrorType errorType,
+        Dictionary<string, string[]>? validationErrors = null
     )
     {
         Code = code;
         Description = description;
         ErrorType = errorType;
+        ValidationErrors = validationErrors;
     }
 
     public string Code { get; }
@@ -29,14 +31,16 @@ public class Error
 
     public ErrorType ErrorType { get; }
 
+    public Dictionary<string, string[]>? ValidationErrors { get; }
+
     public static Error Failure(string code, string description) =>
         new(code, description, ErrorType.Failure);
 
     public static Error NotFound(string code, string description) =>
         new(code, description, ErrorType.NotFound);
 
-    public static Error Validation(string code, string description) =>
-        new(code, description, ErrorType.Validation);
+    public static Error Validation(string code, Dictionary<string, string[]> validationErrors) =>
+        new(code, "One or more validation errors occurred", ErrorType.Validation, validationErrors);
 
     public static Error Conflict(string code, string description) =>
         new(code, description, ErrorType.Conflict);

@@ -21,7 +21,7 @@ public static class JwtConfiguration
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JwtOptionsKey));
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer("players-scheme", options =>
+        .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
