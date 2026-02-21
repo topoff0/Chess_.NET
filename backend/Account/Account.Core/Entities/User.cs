@@ -12,26 +12,28 @@ public enum UserStatus
     Active
 }
 
-public class User
+public sealed class User
 {
+    private const int MaxActiveRefreshToken = 5;
+
     public Guid Id { get; private set; }
     public string Email { get; private set; } = string.Empty;
+    public string Username { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
+    public string ImagePath { get; private set; } = string.Empty;
+
     public AuthProvider Provider { get; private set; }
     public UserStatus Status { get; private set; }
-    public string PasswordHash { get; private set; } = string.Empty;
-    public string Username { get; private set; } = string.Empty;
-    public string ImagePath { get; private set; } = string.Empty;
-    public List<RefreshToken> RefreshTokens { get; private set; } = [];
-    // TODO: Make cleaning mechanism for old tokens
 
     public DateTime CreatedAt { get; private set; }
     public DateTime? LastLoginAt { get; private set; }
+
+    public List<RefreshToken> RefreshTokens { get; private set; } = [];
 
 
     private User() { }
 
 
-    //TODO: Add refresh token
     public static User CreatePending(string email, AuthProvider provider)
         => new()
         {
@@ -40,7 +42,8 @@ public class User
             Provider = provider,
             Status = UserStatus.Pending
         };
-    public void SetUser(string username, string passwordHash, string imagePath)
+
+    public void Activate(string username, string passwordHash, string imagePath)
     {
         PasswordHash = passwordHash;
         Username = username;
@@ -55,8 +58,53 @@ public class User
         LastLoginAt = DateTime.UtcNow;
     }
 
-    public void AddRefreshToken(RefreshToken refreshToken)
+    public RefreshToken CreateRefreshToken(int expiryDays)
     {
+        CleanupOldTokens();
+
+        var activeTokens = RefreshTokens.Where(t => t.IsActive).ToList();
+
+        if (activeTokens.Count >= MaxActiveRefreshToken)
+        {
+            activeTokens
+                .OrderBy(t => t.CreatedAt)
+                .First()
+                .Revoke();
+        }
+
+        var refreshToken = RefreshToken.Create(Id, expiryDays);
         RefreshTokens.Add(refreshToken);
+
+        return refreshToken;
+    }
+
+    public RefreshToken RotateRefreshToken(string token, int expiryDays)
+    {
+        var existingToken = RefreshTokens.FirstOrDefault(t => t.Token == token)
+            ?? throw new ArgumentException("Refresh token not found");
+
+        if (!existingToken.IsActive)
+            throw new ArgumentException("Refresh token is not active");
+
+        var newRefreshToken = RefreshToken.Create(Id, expiryDays);
+
+        existingToken.Revoke(newRefreshToken.Token);
+        RefreshTokens.Add(newRefreshToken);
+
+        return newRefreshToken;
+    }
+
+    public void RevokeAllRefreshTokens()
+    {
+        foreach (var token in RefreshTokens.Where(t => t.IsActive))
+        {
+            token.Revoke();
+        }
+    }
+
+
+    private void CleanupOldTokens()
+    {
+        RefreshTokens.RemoveAll(t => !t.IsActive && t.RevokedAt != null);
     }
 }

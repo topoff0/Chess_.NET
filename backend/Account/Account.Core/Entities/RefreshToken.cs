@@ -6,17 +6,22 @@ public sealed class RefreshToken
 {
     public Guid Id { get; set; }
     public string Token { get; private set; } = string.Empty;
+
     public Guid UserId { get; private set; }
+    public User User { get; private set; } = null!;
+
     public DateTime Expires { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    //TODO: Add RevokedAt and ReplacedByToken properties and Revoke() method
 
-    // === Calculated ===
+    public DateTime? RevokedAt { get; private set; }
+    public string? ReplacedByToken { get; private set; }
+
     public bool IsExpired => DateTime.UtcNow >= Expires;
-    public bool IsActive => !IsExpired;
+    public bool IsActive => RevokedAt is null && !IsExpired;
 
 
     private RefreshToken() { }
+
 
     public static RefreshToken Create(Guid userId, int expiryDays)
     {
@@ -36,6 +41,16 @@ public sealed class RefreshToken
         };
     }
 
+    public void Revoke(string? replacedByToken = null)
+    {
+        if (!IsActive)
+            return;
+
+        RevokedAt = DateTime.UtcNow;
+        ReplacedByToken = replacedByToken;
+    }
+
+
     private static string GenerateSecurityToken()
     {
         var randomBytes = new byte[64];
@@ -48,7 +63,4 @@ public sealed class RefreshToken
             .Replace('+', '-')
             .Replace("=", "");
     }
-
-
-    //TODO: override ToString()
 }

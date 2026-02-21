@@ -12,10 +12,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(p => p.Email)
           .IsRequired()
-          .HasMaxLength(150);
+          .HasMaxLength(256);
 
         builder.Property(p => p.Username)
           .IsRequired()
-          .HasMaxLength(150);
+          .HasMaxLength(128);
+
+        builder.HasMany(u => u.RefreshTokens)
+            .WithOne(rt => rt.User)
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

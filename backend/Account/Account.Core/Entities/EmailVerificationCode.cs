@@ -1,6 +1,6 @@
 ﻿namespace Account.Core.Entities;
 
-public class EmailVerificationCode
+public sealed class EmailVerificationCode
 {
     public Guid Id { get; private set; }
     public string Email { get; private set; } = string.Empty;
@@ -14,7 +14,9 @@ public class EmailVerificationCode
     public bool IsExpired => CreatedAt >= ExpiryAt;
     public bool IsActive => !IsExpired;
 
+
     private EmailVerificationCode() { }
+
 
     public static EmailVerificationCode Create(string email, string hashedCode)
         => new()

@@ -36,7 +36,7 @@ public sealed class CreateProfileCommandHandler(IUserRepository userRepository,
             return Error.NotFound(ErrorCodes.UserNotFound, ErrorMessages.UserNotFound);
 
         var hashedPassword = _passwordHasher.Hash(request.Password);
-        user.SetUser(request.Username, hashedPassword, "image/path"); // TODO: Create ImageService to handle images operations
+        user.Activate(request.Username, hashedPassword, "image/path"); // TODO: Create ImageService to handle images operations
 
         var player = Player.Create(user.Id);
         await _playerRepository.AddAsync(player, token);

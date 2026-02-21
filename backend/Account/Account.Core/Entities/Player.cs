@@ -1,7 +1,7 @@
 
 namespace Account.Core.Entities;
 
-public class Player
+public sealed class Player
 {
     public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
@@ -10,7 +10,9 @@ public class Player
     public List<Guid> TournamentsId { get; private set; } = [];
     public List<Guid> FriendsIds { get; private set; } = [];
 
+
     private Player() { }
+
 
     public static Player Create(Guid userId)
         => new()

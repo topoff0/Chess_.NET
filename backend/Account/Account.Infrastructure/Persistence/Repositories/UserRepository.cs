@@ -33,6 +33,13 @@ public class UserRepository(UsersDbContext context) : IUserRepository
         return await _context.Users.FindAsync([id], token);
     }
 
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken token = default)
+    {
+        return await _context.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == refreshToken && rt.IsActive), token);
+    }
+
     public async Task<bool> IsActiveByEmailAsync(string email, CancellationToken token = default)
     {
         return await _context.Users.AnyAsync(u => u.Email == email && u.Status == UserStatus.Active, token);
