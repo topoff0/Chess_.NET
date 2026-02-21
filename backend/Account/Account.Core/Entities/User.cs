@@ -80,7 +80,7 @@ public sealed class User
 
     public RefreshToken RotateRefreshToken(string token, int expiryDays)
     {
-        var existingToken = RefreshTokens.FirstOrDefault(t => t.Token == token)
+        var existingToken = RefreshTokens.FirstOrDefault(t => t.TokenHash == token)
             ?? throw new ArgumentException("Refresh token not found");
 
         if (!existingToken.IsActive)
@@ -88,7 +88,7 @@ public sealed class User
 
         var newRefreshToken = RefreshToken.Create(Id, expiryDays);
 
-        existingToken.Revoke(newRefreshToken.Token);
+        existingToken.Revoke(newRefreshToken.TokenHash);
         RefreshTokens.Add(newRefreshToken);
 
         return newRefreshToken;

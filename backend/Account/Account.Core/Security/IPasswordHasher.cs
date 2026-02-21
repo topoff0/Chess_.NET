@@ -1,7 +1,9 @@
-﻿namespace Account.Core.Security;
+﻿using Account.Core.Security.Common;
 
-public interface IPasswordHasher
+namespace Account.Core.Security;
+
+public interface IPasswordHasher : IHasher
 {
-    string Hash(string password);
-    bool Verify(string password, string hash);
+
 }
+

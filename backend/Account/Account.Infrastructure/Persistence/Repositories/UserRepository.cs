@@ -33,11 +33,14 @@ public class UserRepository(UsersDbContext context) : IUserRepository
         return await _context.Users.FindAsync([id], token);
     }
 
-    public async Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken token = default)
+    public async Task<RefreshToken?> GetRefreshTokenByHashAsync(string hash, CancellationToken token = default)
     {
-        return await _context.Users
-            .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(u => u.RefreshTokens.Any(rt => rt.Token == refreshToken && rt.IsActive), token);
+        return await _context.RefreshTokens
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rt =>
+                rt.TokenHash == hash &&
+                rt.RevokedAt == null &&
+                rt.Expires > DateTime.UtcNow, token);
     }
 
     public async Task<bool> IsActiveByEmailAsync(string email, CancellationToken token = default)

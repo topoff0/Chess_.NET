@@ -139,6 +139,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IVerificationCodeHasher, VerificationCodeHasher>();
+        services.AddScoped<IRefreshTokenHasher, RefreshTokenHasher>();
 
         return services;
     }

@@ -10,7 +10,7 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
     {
         builder.ToTable("RefreshTokens", "account");
 
-        builder.HasIndex(rt => rt.Token)
+        builder.HasIndex(rt => rt.TokenHash)
             .IsUnique();
     }
 }
