@@ -9,7 +9,7 @@ public class StartEmailAuthCommandValidator : AbstractValidator<StartEmailAuthCo
     {
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("Email must not be empty")
+            .WithMessage("Email field must not be empty")
             .EmailAddress()
             .WithMessage("Incorrect email address")
             .MaximumLength(256)

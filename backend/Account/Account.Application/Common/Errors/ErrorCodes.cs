@@ -3,7 +3,6 @@
 public static class ErrorCodes
 {
     // Auth errors
-    public const string InvalidEmail = "auth.invalid_email";
     public const string InvalidVerificationCode = "auth.invalid_verification_code";
     public const string InvalidPassword = "auth.incorrect_password";
 
@@ -30,9 +29,8 @@ public static class ErrorCodes
 public static class ErrorMessages
 {
     // Auth messages
-    public const string InvalidEmail = "Invalid email";
     public const string InvalidVerificationCode = "Invalid verification code";
-    public const string InvalidPassword = "Invalid password";
+    public const string InvalidPassword = "User with this email and password not found";
 
     public const string UserNotFound = "User is not found";
     public const string VerificationCodeNotFound = "We have not sent any verification codes to this email";

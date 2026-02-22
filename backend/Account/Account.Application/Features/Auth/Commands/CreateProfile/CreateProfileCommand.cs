@@ -29,8 +29,6 @@ public sealed class CreateProfileCommandHandler(IUserRepository userRepository,
 
     public async Task<ResultT<CreateProfileResult>> Handle(CreateProfileCommand request, CancellationToken token)
     {
-        //TODO: Validaation check
-
         var user = await _userRepository.GetByEmailAsync(request.Email, token);
         if (user is null)
             return Error.NotFound(ErrorCodes.UserNotFound, ErrorMessages.UserNotFound);
