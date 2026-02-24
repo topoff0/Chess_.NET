@@ -1,4 +1,5 @@
 ﻿using Account.Application.Common.Errors;
+using Account.Application.Common.Interfaces;
 using Account.Application.Common.Results;
 using Account.Application.Features.Auth.Results;
 using Account.Core.Entities;
@@ -14,12 +15,14 @@ public record LoginCommand(string Email, string Password)
 
 public sealed class LoginCommandHandler(IUserRepository userRepository,
                                         IUnitOfWork unitOfWork,
-                                        IPasswordHasher passwordHasher)
+                                        IPasswordHasher passwordHasher,
+                                        IJwtTokenService jwtService)
     : IRequestHandler<LoginCommand, ResultT<LoginResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
+    private readonly IJwtTokenService _jwtService = jwtService;
 
     public async Task<ResultT<LoginResult>> Handle(LoginCommand request, CancellationToken token)
     {
@@ -43,6 +46,7 @@ public sealed class LoginCommandHandler(IUserRepository userRepository,
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        return new LoginResult(IsSuccess: true);
+        var jwtToken = _jwtService.GenerateAccessToken(user.Id, user.Email);
+        return new LoginResult(jwtToken);
     }
 }
