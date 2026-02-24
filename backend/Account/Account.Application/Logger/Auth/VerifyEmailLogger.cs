@@ -2,7 +2,7 @@
 
 namespace Account.Application.Logger.Auth;
 
-public static partial class VerifyEmailCommandLogger
+public static partial class VerifyEmailLogger
 {
     [LoggerMessage(
         EventId = 1100,
