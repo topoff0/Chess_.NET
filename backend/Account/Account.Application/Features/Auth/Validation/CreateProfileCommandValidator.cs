@@ -24,8 +24,8 @@ public class CreateProfileCommandValidator : AbstractValidator<CreateProfileComm
         RuleFor(x => x.Password)
             .NotEmpty()
             .WithMessage("Password field must not be empty")
-            .MinimumLength(6)
-            .WithMessage("Password length must be at least 6 characters");
+            .MinimumLength(8)
+            .WithMessage("Password length must be at least 8 characters");
 
         RuleFor(x => x.ConfirmPassword)
             .NotEmpty()
