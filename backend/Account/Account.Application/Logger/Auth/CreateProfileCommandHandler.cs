@@ -35,6 +35,12 @@ public static partial class CreateProfileCommandHandler
     public static partial void LogSuccessfulCreateAccount(this ILogger logger);
 
     [LoggerMessage(
+        EventId = 1398,
+        Level = LogLevel.Critical,
+        Message = "Fail to save image with this format: {Message}")]
+    public static partial void LogSaveImageErrorCreateProfile(this ILogger logger, string message);
+
+    [LoggerMessage(
         EventId = 1399,
         Level = LogLevel.Critical,
         Message = "An unexpected error occurred while processing create profile command: {Message}")]

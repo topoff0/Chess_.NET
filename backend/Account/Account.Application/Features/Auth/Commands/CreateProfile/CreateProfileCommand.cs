@@ -78,6 +78,17 @@ public sealed class CreateProfileCommandHandler(IUserRepository userRepository,
 
             return ResultT<CreateProfileResult>.Success(new(IsCreated: true));
         }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogSaveImageErrorCreateProfile(ex.Message);
+            return Error.Validation(new Dictionary<string, string[]>
+            {
+                {
+                    ErrorCodes.IncorrectImageFormat,
+                    new []{ ErrorMessages.IncorrectImageFormat }
+                }
+            });
+        }
         catch (Exception ex)
         {
             _logger.LogUnexpectedErrorCreateProfile(ex.Message);
